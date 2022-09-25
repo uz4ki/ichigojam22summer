@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using General;
 using UnityEngine;
 
-public class Test : MonoBehaviour
+public class JoyconGyro : MonoBehaviour
 {
     [SerializeField] private float loopValue;
     [SerializeField] private float nowAngle;
@@ -23,12 +24,16 @@ public class Test : MonoBehaviour
 
     private void Update()
     {
-        if (joyconL.GetButtonDown(Joycon.Button.DPAD_DOWN))
-        {
-            viewBrain.rotation = Quaternion.identity;
-        }
+        if (GameManager.Instance.IsPlayingGame) CalcJoyconGyro();
+    }
 
+    private void ResetViewBrain()
+    {
+        viewBrain.rotation = Quaternion.identity;
+    }
 
+    private void CalcJoyconGyro()
+    {
         nowAngle += joyconL.GetGyro().y * Time.deltaTime;
         if (nowAngle > loopValue)
         {
