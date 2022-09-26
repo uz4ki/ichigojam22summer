@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db2f94b9bc6eeab499c2973d78d9fea5, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: 
-  tileWidth: 2
-  tileHeight: 2
+  tileWidth: 3
+  tileHeight: 3
   checkPoints:
   - {x: 0, y: 0}
-  alreadyFilledTiles: []
+  alreadyFilledTiles:
+  - {x: 1, y: 1}
+  hints:
+  - route:
+    - {x: 1, y: 0}
+    - {x: 1, y: 0}
+  - route:
+    - {x: 0, y: 1}
+    - {x: 0, y: 1}

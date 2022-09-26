@@ -8,6 +8,8 @@ namespace General
     {
         [SerializeField] private List<MiniGameManager> gameList;
         [field: SerializeField] public Queue<MiniGameManager> LoadedGames { get; private set; }
+
+        private int _hintCounts;
         
         public void Initialization()
         {
@@ -20,15 +22,25 @@ namespace General
             EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
             EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
             
+            _hintCounts = 0;
+            
             LoadedGames.Peek().gameObject.SetActive(true);
         }
 
         public void MoveToNextLevel()
         {
+            _hintCounts = 0;
             var random = new System.Random();
             DequeueMiniGame();
             EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
             LoadedGames.Peek().gameObject.SetActive(true);
+        }
+
+        public void GetHints()
+        {
+            if (LoadedGames.Peek().NumberOfHints <= _hintCounts) return;
+            _hintCounts++;
+            LoadedGames.Peek().SendHint(_hintCounts);
         }
         
         private void EnqueueMiniGame(MiniGameManager game)

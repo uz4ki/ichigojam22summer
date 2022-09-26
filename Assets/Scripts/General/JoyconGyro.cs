@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using General;
+using JoyconLib_scripts;
 using UnityEngine;
 
 public class JoyconGyro : MonoBehaviour
 {
     [SerializeField] private float loopValue;
     [SerializeField] private float nowAngle;
-    [SerializeField] private int rotateCount;
     [SerializeField] private Transform viewBrain;
     private Quaternion prevVec;
 
@@ -25,6 +25,7 @@ public class JoyconGyro : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.IsPlayingGame) CalcJoyconGyro();
+        if (Input.GetKeyDown(KeyCode.A)) ResetViewBrain();
     }
 
     private void ResetViewBrain()
@@ -38,14 +39,15 @@ public class JoyconGyro : MonoBehaviour
         if (nowAngle > loopValue)
         {
             nowAngle -= loopValue;
-            rotateCount++;
+            MiniGameLoader.Instance.GetHints();
         }
         if (nowAngle < - loopValue)
         {
             nowAngle += loopValue;
-            rotateCount++;
+            MiniGameLoader.Instance.GetHints();
         }
         
-        transform.rotation = joyconL.GetVector();
+        
+        transform.rotation = Quaternion.Euler(0, (nowAngle * 360f) / loopValue, 0);
     }
 }

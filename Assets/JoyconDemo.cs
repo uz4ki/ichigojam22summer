@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using JoyconLib_scripts;
 using UnityEngine;
 
 public class JoyconDemo : MonoBehaviour {
