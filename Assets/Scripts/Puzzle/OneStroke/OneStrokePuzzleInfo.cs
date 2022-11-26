@@ -15,12 +15,14 @@ namespace Puzzle.OneStroke
     [CreateAssetMenu]
     public class OneStrokePuzzleInfo : ScriptableObject
     {
+        [SerializeField] private float tileSize;
         [SerializeField] private int tileWidth;
         [SerializeField] private int tileHeight;
         [SerializeField] private List<Vector2> checkPoints;
         [SerializeField] private List<Vector2> alreadyFilledTiles;
         [SerializeField] private List<Phase> hints;
-        
+
+        public float TileSize => tileSize;
         public int TileWidth => tileWidth;
 
         public int TileHeight => tileHeight;

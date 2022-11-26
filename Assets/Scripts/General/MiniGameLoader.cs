@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace General
 {
@@ -8,8 +9,10 @@ namespace General
     {
         [SerializeField] private List<MiniGameManager> gameList;
         [field: SerializeField] public Queue<MiniGameManager> LoadedGames { get; private set; }
+        
+        public UnityEvent<int,bool> OnGetHint;
 
-        private int _hintCounts;
+        public int HintCounts { get; private set; }
         
         public void Initialization()
         {
@@ -17,19 +20,21 @@ namespace General
 
             LoadedGames = new Queue<MiniGameManager>();
 
-            var random = new System.Random();
-            EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
-            EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
-            EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
+            var random = UnityEngine.Random.Range(0, gameList.Count);
+            EnqueueMiniGame(gameList[random]);
+            random = UnityEngine.Random.Range(0, gameList.Count);
+            EnqueueMiniGame(gameList[random]);
+            random = UnityEngine.Random.Range(0, gameList.Count);
+            EnqueueMiniGame(gameList[random]);
             
-            _hintCounts = 0;
+            HintCounts = 0;
             
             LoadedGames.Peek().gameObject.SetActive(true);
         }
 
         public void MoveToNextLevel()
         {
-            _hintCounts = 0;
+            HintCounts = 0;
             var random = new System.Random();
             DequeueMiniGame();
             EnqueueMiniGame(gameList[random.Next(0,gameList.Count)]);
@@ -38,9 +43,21 @@ namespace General
 
         public void GetHints()
         {
-            if (LoadedGames.Peek().NumberOfHints <= _hintCounts) return;
-            _hintCounts++;
-            LoadedGames.Peek().SendHint(_hintCounts);
+            if (LoadedGames.Peek().NumberOfHints <= HintCounts) return;
+            HintCounts++;
+            
+            if (LoadedGames.Peek().NumberOfHints == HintCounts)
+            {
+                OnGetHint.Invoke(HintCounts, true);
+                StartCoroutine(JoyconGyro.Instance.RumbleOnGetMaxHint());
+            }
+            else
+            {
+                OnGetHint.Invoke(HintCounts, false);
+                JoyconGyro.Instance.RumbleOnGetNormalHint();
+            }
+
+            LoadedGames.Peek().SendHint(HintCounts);
         }
         
         private void EnqueueMiniGame(MiniGameManager game)
